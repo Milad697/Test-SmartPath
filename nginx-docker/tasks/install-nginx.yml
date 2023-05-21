@@ -1,39 +1,33 @@
 ---
 
-- name: Update apt cache (for Ubuntu) or yum cache (for CentOS)
-  become_method: "{{ ansible_pkg_mgr }}"
-  package_facts:
-  manager_update_cache: yes
-
 - name: Install required packages
-  become_method: "{{ ansible_pkg_mgr }}"
   package:
     name: "{{ item }}"
     state: present
+    update_cache: yes
   loop:
     - nginx
-    - php-fpm
   when: ansible_pkg_mgr == "apt"  # Only for Ubuntu
   notify:
     - start nginx
 
 - name: Install required packages
   tags: centos
-  become_method: "{{ ansible_pkg_mgr }}"
   package:
     name: "{{ item }}"
     state: present
+    update_cache: yes
   loop:
     - nginx
-    - php-fpm
+
   when: ansible_pkg_mgr == "yum"  # Only for centos
   notify:
     - start nginx
 
 - name: Remove default NGINX configuration
   file:
-  path: /etc/nginx/conf.d/default.conf
-  state: absent
+    path: /etc/nginx/conf.d/default.conf
+    state: absent
 
 - name: Create sites-enabled directory
   tags: centos
@@ -52,27 +46,30 @@
   when: ansible_distribution == 'CentOS'
 
 
-- name: Configure Nginx
+- name: Configure site availables
+  template:
+    src: site-config.j2
+    dest: /etc/nginx/sites-available/myapp.com.conf
+
+- name: Configure nginx.conf
   template:
     src: nginx.conf.j2
-    dest: /etc/nginx/sites-available/myapp.com.conf
-  notify:
-    - reload nginx
+    dest: /etc/nginx/nginx.conf
 
 - name: Enable site
   file:
     src: /etc/nginx/sites-available/myapp.com.conf
     dest: /etc/nginx/sites-enabled/myapp.com.conf
-    state: link
-  notify: reload nginx 
+    state: link 
 
 - name: Verify NGINX configuration syntax
-      command: nginx -t
-      register: nginx_config_check
-      changed_when: false
-      ignore_errors: true
+  command: nginx -t
+  register: nginx_config_check
+  changed_when: false
+  ignore_errors: true
 
 - name: Reload NGINX
   command: nginx -s reload
   when: nginx_config_check.rc == 0
   changed_when: nginx_config_check.rc == 0
+

@@ -1,0 +1,7 @@
+---
+
+- name: istall nginx & docker and setup 
+  become: true
+  hosts: myapp
+  roles:
+    - nginx-docker
