@@ -1,2 +1,6 @@
 ---
 # vars file for nginx-docker
+
+domain: myapp.com
+proxy_pass_ip: 127.0.0.1:8080
+

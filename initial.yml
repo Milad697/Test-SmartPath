@@ -1,0 +1,44 @@
+---
+
+- name: Create user ansible in myapp server and add SSH key
+  hosts: myapp
+  become: true
+  become_method: sudo
+  vars:
+    ssh_key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+    username: ansible
+    password: my@pass123
+
+  pre_tasks:
+    - name: Create user ansible
+      user:
+        name: "{{ username }}"
+        shell: /bin/bash
+        createhome: yes
+        password: "{{ password | password_hash('sha512') }}"
+        state: present
+      become: true
+      become_method: sudo
+
+  tasks:
+    - name: Add SSH key for user ansible
+      authorized_key:
+        user: "{{ username }}"
+        key: "{{ ssh_key }}"
+        state: present
+      become: true
+      become_method: sudo
+
+    - name: Add ansible to sudo group
+      user:
+        name: "{{ username }}"
+        groups: sudo
+        append: yes
+   
+    - name: Add user in suduers.d directory
+      copy:
+        src: ~/Test-SmartPath/files/ansible
+        dest: /etc/sudoers.d/
+        owner: root
+        group: root
+        mode: 0440 

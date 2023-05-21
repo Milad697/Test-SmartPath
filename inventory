@@ -1,0 +1,6 @@
+[webservers]
+myapp ansible_host=37.32.10.100
+
+[localhost]
+localhost ansible_connection=local
+

@@ -1,2 +1,7 @@
 ---
-# tasks file for nginx-docker
+# tasks fot installing nginx and docker
+- name: Install Nginx webserver on Test server
+  import_tasks: install-nginx.yml
+- name: Install docker on ubuntu Test server
+  import_tasks: install-docker.yml
+
