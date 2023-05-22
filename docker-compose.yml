@@ -1,0 +1,8 @@
+version: "3"
+services:
+  nodejsapp:
+    image: milad697/nodejs-app:v1
+    container_name: myapp-container
+    ports:
+      - 3000:3000
+    restart: unless-stopped

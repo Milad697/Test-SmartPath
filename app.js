@@ -1,9 +1,9 @@
-const express = require("express");
+const express = require("express"); 
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const _ = require("lodash");
 
-const homeStartingContent = "Milad Shabani changed this file for test project give by SmartPath.i very happy work on this project and i learned much about nodejs language and dependencies."
+const homeStartingContent = "Milad Shabani changed this file for test project gived by SmartPath.i am very happy work on this project and i learned much about nodejs language and dependencies."
 const aboutContent = "I very intested and happy to Dockerized this project for testing.";
 const contactContent = "Let's get in touch to discuss your needs and how I can help. Please feel free to contact me via email, and I will get back to you as soon as possible. I look forward to hearing from you!";
 
@@ -60,3 +60,5 @@ app.use(express.static("public"));
 app.listen(process.env.PORT || 3000, function() {
   console.log("Server started on port 3000");
 });
+
+module.exports = app;
